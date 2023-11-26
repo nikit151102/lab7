@@ -1,84 +1,99 @@
 import { Component, ElementRef, Renderer2, ViewChild } from '@angular/core';
-import { CommandInvoker } from './CommandInvoker';
-import { Circle } from './Circle';
-import { CreateCommand } from './CreateCommand';
-import { MoveCommand } from './MoveCommand';
-import { SetColorCommand } from './SetColorCommand';
-import { RemoveCommand } from './RemoveCommand';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
+import { CommandInvoker } from './Circle/CommandInvoker';
+import { Circle } from './Circle/Circle';
+import { CreateCommand } from './Circle/CreateCommand';
+import { MoveCommand } from './Circle/MoveCommand';
+import { SetColorCommand } from './Circle/SetColorCommand';
+import { RemoveCommand } from './Circle/RemoveCommand';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { StoringElementsService} from './storingElements.service'
+import { UpdateCommand } from './Circle/updateCommand';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+
   @ViewChild('circleContainer', { static: true }) circleContainer!: ElementRef;
   invoker: CommandInvoker = new CommandInvoker();
-  shapes: Circle[] = [];
+
   circleForm!: FormGroup;
   selectedCircle: Circle | null = null;
+  activeIndex: number | undefined;
+  isEdit:boolean = false
 
-  constructor(private fb: FormBuilder, private renderer: Renderer2, private el: ElementRef) { }
+  constructor(private fb: FormBuilder, private renderer: Renderer2, private el: ElementRef, public StoringElementsService:StoringElementsService) { }
  
   ngOnInit(): void {
     this.circleForm = this.fb.group({
       x: [50, Validators.required],
       y: [50, Validators.required],
-      radius: [20, Validators.required]
+      radius: [20, Validators.required],
+      color: new FormControl(),
+      Zindex: [1, Validators.required]
     });
   }
 
-
   addCircle(): void {
     if (this.circleForm.valid) {
-      const { x, y, radius } = this.circleForm.value;
-      const circle = new Circle();
-      circle.setCoordinates(x, y);
-      circle.setRadius(radius);
-      circle.setElementRef(this.circleContainer.nativeElement);
-      this.shapes.push(circle);
-      this.invoker.executeCommand(new CreateCommand(Circle, [x, y, radius]));
+      const { x, y, radius, color } = this.circleForm.value;
+      console.log("color", color);
+      this.invoker.executeUp(new CreateCommand(Circle, [x, y, radius, color, this.circleContainer.nativeElement], this.StoringElementsService));
       this.circleForm.reset();
     }
   }
 
   moveCircle(circle: Circle, newX: number, newY: number): void {
-    this.invoker.executeCommand(new MoveCommand(circle, newX, newY));
+    this.invoker.executeUp(new MoveCommand(circle, newX, newY));
   }
 
   setColor(circle: Circle, newColor: string): void {
-    this.invoker.executeCommand(new SetColorCommand(circle, newColor));
+    this.invoker.executeUp(new SetColorCommand(circle, newColor));
   }
 
-  removeCircle(circle: Circle): void {
-    const index = this.shapes.indexOf(circle);
-    if (index !== -1) {
-      this.shapes.splice(index, 1);
-      this.invoker.executeCommand(new RemoveCommand(circle));
-    }
+  backCommand(): void {
+      this.invoker.undoBack();
   }
-
-  undoLastCommand(): void {
-    this.invoker.undoLastCommand();
+  upCommand(): void {
+      this.invoker.undoUp();
   }
 
   startDrag(event: MouseEvent, circle: Circle): void {
+    this.isEdit = true;
     this.circleForm.setValue({
       x: circle.x,
       y: circle.y,
-      radius: circle.radius
+      radius: circle.radius,
+      color: circle.color,
+      Zindex:circle.Zindex
     });
     this.selectedCircle = circle;
   }
 
   updateCircle(): void {
     if (this.selectedCircle) {
-      const { x, y, radius } = this.circleForm.value;
-      this.selectedCircle.move(x, y);
-      this.selectedCircle.setRadius(radius);
-      this.invoker.executeCommand(new MoveCommand(this.selectedCircle, x, y));
+      const { x, y, radius, color } = this.circleForm.value;
+      this.invoker.executeUp(new UpdateCommand(
+        this.selectedCircle,
+        x,
+        y,
+        radius,
+        color,
+        this.StoringElementsService
+      ));
+      this.isEdit = false;
+      this.circleForm.reset();
     }
+  }
+
+  removeComponent(): void {
+    if(this.selectedCircle){
+      this.invoker.executeUp(new RemoveCommand(this.StoringElementsService,this.selectedCircle.memoryLocation))
+      this.invoker.removeComponent(this.selectedCircle.memoryLocation)
+    }
+    this.isEdit = false;
+    this.circleForm.reset();
   }
 
   getCircleStyles(circle: Circle): any {
@@ -89,6 +104,8 @@ export class AppComponent {
       'margin.px': 10,
       'left.px': circle.x,
       'top.px': circle.y,
+      'background-color': circle.color,
+      'Zindex':circle.Zindex
     };
   }
 }

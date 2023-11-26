@@ -1,4 +1,4 @@
-import { Shape } from './ShapeCommands';
+import { Shape } from '../ShapeCommands';
 
 export class SetColorCommand {
   private originalColor: string = '';

@@ -10,6 +10,11 @@
     background-color: aquamarine;
 }
 
+
+.formCircle{
+    display: flex;
+    flex-direction: column;
+}
 .elements {
     width: 100%;
     height: 600px;

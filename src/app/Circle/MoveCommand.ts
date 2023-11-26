@@ -1,4 +1,4 @@
-import { Shape } from './ShapeCommands';
+import { Shape } from '../ShapeCommands';
 
 export class MoveCommand {
   private originalPosition: { x: number; y: number } = { x: 0, y: 0 };

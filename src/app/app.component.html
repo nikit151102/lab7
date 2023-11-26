@@ -1,30 +1,56 @@
 <div class="content">
     <div class="settings">
-        <div>
-            <form [formGroup]="circleForm">
-                <label for="x">X:</label>
-                <input type="number" id="x" formControlName="x" />
+         <button (click)="backCommand()">назад</button>
+         <button (click)="upCommand()">вперед</button>
+        <div class="card flex justify-content-center">
+            <p-accordion [activeIndex]="0">
+                <p-accordionTab header="круг">
+                        <form [formGroup]="circleForm" class="formCircle">
+                            <label for="x">X:</label>
+                            <input type="number" id="x" formControlName="x" />
+            
+                            <label for="y">Y:</label>
+                            <input type="number" id="y" formControlName="y" />
+            
+                            <label for="radius">Radius:</label>
+                            <input type="number" id="radius" formControlName="radius" />
 
-                <label for="y">Y:</label>
-                <input type="number" id="y" formControlName="y" />
+                            <p-colorPicker formControlName="color"></p-colorPicker>
 
-                <label for="radius">Radius:</label>
-                <input type="number" id="radius" formControlName="radius" />
-
-                <button type="button" (click)="addCircle()">Add Circle</button>
-                <button type="button" (click)="updateCircle()">Update Circle</button>
-            </form>
-
-            <button (click)="undoLastCommand()">Undo Last Command</button>
+                            <label for="Zindex">Zindex:</label>
+                            <input type="number" id="Zindex" formControlName="Zindex" />
+                            <ng-container *ngIf="!isEdit">
+                                <button type="button" (click)="addCircle()">Add Circle</button>
+                            </ng-container>
+                            <ng-container *ngIf="isEdit">
+                                <button type="button" (click)="updateCircle()">Update Circle</button>
+                                <button type="button"  (click)="removeComponent()">Remove Component</button>
+                            </ng-container> 
+                        </form>
+                </p-accordionTab>
+                <p-accordionTab header="Header II">
+                    <p>
+                        Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim
+                        ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Consectetur, adipisci velit, sed quia non numquam eius modi.
+                    </p>
+                </p-accordionTab>
+                <p-accordionTab header="Header III">
+                    <p>
+                        At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa
+                        qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus.
+                    </p>
+                </p-accordionTab>
+            </p-accordion>
         </div>
+     
     </div>
     <div class="view">
         <div #circleContainer class="elements">
-            <div *ngFor="let circle of shapes">
+            <div *ngFor="let circle of StoringElementsService.Components">
                 <div [ngStyle]="getCircleStyles(circle)" [style.background-color]="circle.color"
                     (mousedown)="startDrag($event, circle)" style="position: absolute;"></div>
             </div>
         </div>
 
     </div>
-</div>
+</div> 
