@@ -7,18 +7,38 @@
 }
 .view{
     flex: 70%;
-    background-color: aquamarine;
+}
+.BtnsUndu{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
 }
 
+.BtnUndo{
+    display: flex;
+    width: 45px;
+    height: 45px;
+    justify-content: center;
+    justify-items: center;
+    justify-self: center;
+    background: rgb(255 255 255);
+    border: 1px solid rgb(197 197 197);
+    border-radius: 50px;
+   
+}
 
-.formCircle{
+.forms{
     display: flex;
     flex-direction: column;
+    gap: 5px;
 }
 .elements {
     width: 100%;
     height: 600px;
     position: relative;
+    background: rgb(255 255 255);
+    border: 1px solid rgb(197 197 197);
+    border-radius: 10px;
 }
 
 button {

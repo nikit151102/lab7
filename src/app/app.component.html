@@ -1,56 +1,87 @@
 <div class="content">
     <div class="settings">
-         <button (click)="backCommand()">назад</button>
-         <button (click)="upCommand()">вперед</button>
+        <div class="BtnsUndu">
+            <div class="BtnUndo">
+                <a (click)="backCommand()" >
+                    <svg width="40px" height="40px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6 12H18M6 12L11 7M6 12L11 17" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                </a>
+            </div>
+            <div class="BtnUndo">
+                <a (click)="upCommand()" >
+                    <svg width="40px" height="40px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6 12H18M18 12L13 7M18 12L13 17" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                </a>
+            </div>
+        </div>
+        
         <div class="card flex justify-content-center">
             <p-accordion [activeIndex]="0">
                 <p-accordionTab header="круг">
-                        <form [formGroup]="circleForm" class="formCircle">
-                            <label for="x">X:</label>
-                            <input type="number" id="x" formControlName="x" />
-            
-                            <label for="y">Y:</label>
-                            <input type="number" id="y" formControlName="y" />
-            
-                            <label for="radius">Radius:</label>
-                            <input type="number" id="radius" formControlName="radius" />
+                    <form [formGroup]="circleForm" class="forms">
+                        <label for="x">X:</label>
+                        <input type="number" id="x" pInputText formControlName="x"/>
+                        <label for="y">Y:</label>
+                        <input type="number" id="y" pInputText formControlName="y"/>
+                        <label for="radius">Радиус:</label>
+                        <input type="number" id="radius" pInputText formControlName="radius"/>
+                        <label for="Zindex">Zindex:</label>
+                        <input type="number" id="Zindex" pInputText formControlName="Zindex"/>
+                        <div style="display: flex;">
+                            <label for="color">Цвет:</label>
+                        <p-colorPicker formControlName="color" id="color"></p-colorPicker>
+                        </div>
+                        <ng-container *ngIf="!isEditCircle" style="justify-content: center;">
+                            <p-button label="Нарисовать" severity="success" (click)="addCircle()"></p-button>
+                        </ng-container>
+                        <ng-container *ngIf="isEditCircle">
+                            <p-button label="Изменить" (click)="updateCircle()"></p-button>
+                            <p-button label="Удалить" severity="danger" (click)="removeComponent()"></p-button>
+                        </ng-container>
 
-                            <p-colorPicker formControlName="color"></p-colorPicker>
-
-                            <label for="Zindex">Zindex:</label>
-                            <input type="number" id="Zindex" formControlName="Zindex" />
-                            <ng-container *ngIf="!isEdit">
-                                <button type="button" (click)="addCircle()">Add Circle</button>
-                            </ng-container>
-                            <ng-container *ngIf="isEdit">
-                                <button type="button" (click)="updateCircle()">Update Circle</button>
-                                <button type="button"  (click)="removeComponent()">Remove Component</button>
-                            </ng-container> 
-                        </form>
+                    </form>
                 </p-accordionTab>
-                <p-accordionTab header="Header II">
-                    <p>
-                        Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim
-                        ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Consectetur, adipisci velit, sed quia non numquam eius modi.
-                    </p>
-                </p-accordionTab>
-                <p-accordionTab header="Header III">
-                    <p>
-                        At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa
-                        qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus.
-                    </p>
+                <p-accordionTab header="Квадрат">
+                    <form [formGroup]="squareForm" class="forms">
+                        <label for="x">X:</label>
+                        <input type="number" id="x" pInputText formControlName="x"/>
+                        <label for="y">Y:</label>
+                        <input type="number" id="y" pInputText formControlName="y"/>
+                        <label for="sideLength">Длина сторон:</label>
+                        <input type="number" id="sideLength" pInputText formControlName="sideLength"/>
+                        <label for="Zindex">Zindex:</label>
+                        <input type="number" id="Zindex" pInputText formControlName="Zindex"/>
+                        <div style="display: flex;">
+                            <label for="color">Цвет:</label>
+                        <p-colorPicker formControlName="color" id="color"></p-colorPicker>
+                        </div>
+                        <ng-container *ngIf="!isEditSquare">
+                            <p-button label="Нарисовать" severity="success" (click)="addSquare()"></p-button>
+                        </ng-container>
+                        <ng-container *ngIf="isEditSquare">
+                            <p-button label="Изменить" (click)="updateSquare()"></p-button>
+                            <p-button label="Удалить" severity="danger" (click)="removeComponent()"></p-button>
+                        </ng-container>
+                    </form>
                 </p-accordionTab>
             </p-accordion>
         </div>
-     
     </div>
     <div class="view">
         <div #circleContainer class="elements">
-            <div *ngFor="let circle of StoringElementsService.Components">
-                <div [ngStyle]="getCircleStyles(circle)" [style.background-color]="circle.color"
-                    (mousedown)="startDrag($event, circle)" style="position: absolute;"></div>
+            <div *ngFor="let component of StoringElementsService.Components">
+                <ng-container *ngIf="component.type === 'circle'">
+                    <div [ngStyle]="getCircleStyles(component)" [style.background-color]="component.color"
+                        (mousedown)="startDrag($event, component)" style="position: absolute;"></div>
+                </ng-container>
+                <ng-container *ngIf="component.type === 'square'">
+                    <div [ngStyle]="getSquareStyles(component)" [style.background-color]="component.color"
+                        (mousedown)="startDrag($event, component)" style="position: absolute;"></div>
+                </ng-container>
             </div>
         </div>
 
     </div>
-</div> 
+</div>

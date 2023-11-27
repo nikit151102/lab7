@@ -1,13 +1,13 @@
 import { ElementRef, Inject } from '@angular/core';
-import { modeCircle } from '../modeCircleCommands';
+import { modeSquare } from '../modeSquareCommands';
 import { StoringElementsService } from '../storingElements.service';
 
-export class Circle implements modeCircle {
-    type: string = "circle";
+export class Square implements modeSquare {
+    type: string = "square";
     color: string = 'black';
     x = 0;
     y = 0;
-    radius = 1;
+    sideLength = 10;
     Zindex = 1;
     memoryLocation = '';
     elementRef!: ElementRef;
@@ -23,8 +23,8 @@ export class Circle implements modeCircle {
         this.y = Y;
     }
 
-    setRadius(Radius: number) {
-        this.radius = Radius
+    setsideLength(sideLength: number) {
+        this.sideLength = sideLength;
     }
 
     setElementRef(elementRef: ElementRef): void {
@@ -44,7 +44,7 @@ export class Circle implements modeCircle {
     draw(): void {
         if (this.storingElementsService) {
             this.storingElementsService.Components.push(this);
-        }
+        } 
     }
 
 }

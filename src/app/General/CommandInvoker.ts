@@ -2,7 +2,6 @@ export class CommandInvoker {
   private commandHistory: any[] = [];
   private undoCommand: any[] = [];
 
-
   executeUp(command: any): void {
     this.commandHistory.push(command);
     command.execute();
@@ -12,12 +11,7 @@ export class CommandInvoker {
     if (this.commandHistory.length > 0) {
       const lastCommand = this.commandHistory.pop();
       lastCommand.undo();
-      this.undoCommand.push(lastCommand)
-      console.log("commandHistory")
-      console.log("commandHistory", this.commandHistory)
-      console.log("undoCommand")
-      console.log("undoCommand", this.undoCommand)
-      
+      this.undoCommand.push(lastCommand); 
     }
   }
 
@@ -26,10 +20,6 @@ export class CommandInvoker {
       const undoCommand = this.undoCommand.pop();
       undoCommand.execute();
       this.commandHistory.push(undoCommand);
-      console.log("undoCommand")
-      console.log("undoCommand", this.undoCommand)
-      console.log("commandHistory")
-      console.log("commandHistory", this.commandHistory)
     }
   }
 
@@ -38,4 +28,5 @@ export class CommandInvoker {
       return command.memory !== memoryLocation;
     });
   }
+  
 }
